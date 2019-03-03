@@ -1,46 +1,40 @@
 package dk.kugelberg.hoek_helper.view;
 
-//import android.support.v7.app.AppCompatActivity;
-//import android.os.Bundle;
-//
-//import dk.kugelberg.hoek_helper.R;
-//
-//public class MainActivity extends AppCompatActivity {
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//    }
-//}
-
-
-import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import dk.kugelberg.hoek_helper.R;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private TableLayout tableLayoutHeader;
     private TableLayout tableLayoutData;
 
-    private String[] headerColumns = {"Antal enheder", "VE", "DOMK", "Udvikling", "Udvikling", "Udvikling", "Udvikling", "Udvikling"};
+    private String[] headerColumns = new String[11];
+
     private int numberOfColumns = headerColumns.length;
     private TextView[] textViewsHeaders = new TextView[numberOfColumns];
 
-    private int numberOfRows = 100;
+    private int numberOfRows = 5;
     private TableRow tableRowArray[] = new TableRow[numberOfRows];
 
     private EditText[][] editTextsArray = new EditText[numberOfRows][numberOfColumns];
@@ -50,11 +44,19 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tableLayoutHeader = (TableLayout) findViewById(R.id.tableLayout_header);
-        tableLayoutData = (TableLayout) findViewById(R.id.tableLayout_data);
+        tableLayoutHeader = findViewById(R.id.tableLayout_header);
+        tableLayoutData = findViewById(R.id.tableLayout_data);
 
+        headerColumns = new String[]{getString(R.string.antal_enheder), getString(R.string.vo), getString(R.string.ko), getString(R.string.so), getString(R.string.ve), getString(R.string.ke), getString(R.string.se), getString(R.string.domk), getString(R.string.doms), getString(R.string.gromk), getString(R.string.udvikling)};
         drawTable();
+        setupSharedPreferences();
     }
+
+    /**
+     * Two overloaded methods.
+     * The first one finds the longest text in all the TextViews and EditTexts
+     * The second one finds the longest text in the TextView and the EditTexts of a single column
+     */
 
     public int findLongestCell() {
         int longestCell = 0;
@@ -98,6 +100,10 @@ public class MainActivity extends Activity {
         return longestCell;
     }
 
+    /**
+     * The following code draws the table
+     */
+
     public void drawTable() {
         tableLayoutHeader.removeAllViews();
         tableLayoutData.removeAllViews();
@@ -106,20 +112,20 @@ public class MainActivity extends Activity {
 
         int longestCell = findLongestCell();
 
+        final float scale = getResources().getDisplayMetrics().density;
+        int pixels = (int) ((longestCell * 14) * scale + 0.5f);
+
         for (int i = 0; i < numberOfColumns; i++) {
-            TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT, 1f);
-            layoutParams.setMargins(2, 2, 0, 2);
+            TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+            layoutParams.setMargins(2, 2, 2, 2);
 
             TextView textView = new TextView(this);
-            textView.setBackgroundColor(Color.WHITE);
+            textView.setBackgroundColor(Color.GRAY);
             textView.setText(headerColumns[i]);
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
             textView.setTextColor(Color.BLACK);
-            textView.setVisibility(View.VISIBLE);
             textView.setGravity(Gravity.CENTER);
 
-            final float scale = getResources().getDisplayMetrics().density;
-            int pixels = (int) ((longestCell * 12) * scale + 0.5f);
             textView.setWidth(pixels);
 
             textView.setLayoutParams(layoutParams);
@@ -128,27 +134,33 @@ public class MainActivity extends Activity {
             textViewsHeaders[i] = textView;
         }
 
-        tableLayoutHeader.addView(tableRowHeader, new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        tableLayoutHeader.addView(tableRowHeader);
 
         for (int i = 0; i < numberOfRows; i++) {
+
+            // Create TableRows
             TableRow tableRowData = new TableRow(this);
-            tableRowData.setVisibility(View.VISIBLE);
             tableRowArray[i] = tableRowData;
 
+            // Create EditTexts
             for (int j = 0; j < numberOfColumns; j++) {
-                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT, 1f);
-                layoutParams.setMargins(1, 0, 0, 1);
+                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(2, 2, 2, 2);
 
                 EditText editText = new EditText(this);
-                editText.setBackgroundColor(Color.WHITE);
-                editText.setText("" + i + j);
+
+                if (i % 2 == 0)
+                    editText.setBackgroundColor(Color.WHITE);
+                else
+                    editText.setBackgroundColor(Color.LTGRAY);
+
+                editText.setText(i + " " + j);
                 editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
                 editText.setTextColor(Color.BLACK);
-                editText.setVisibility(View.VISIBLE);
                 editText.setGravity(Gravity.CENTER);
+                editText.setPadding(0, 0, 0, 0);
+//                editText.setSingleLine(true);
 
-                final float scale = getResources().getDisplayMetrics().density;
-                int pixels = (int) ((longestCell * 12) * scale + 0.5f);
                 editText.setWidth(pixels);
 
                 editText.setLayoutParams(layoutParams);
@@ -174,23 +186,130 @@ public class MainActivity extends Activity {
                 tableRowArray[i].addView(editText);
                 editTextsArray[i][j] = editText;
             }
+
+            // Create ImageButtons
+            TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+            ImageButton imageButton = new ImageButton(this);
+            imageButton.setImageResource(android.R.drawable.ic_delete);
+            imageButton.setBackgroundColor(getResources().getColor(R.color.white));
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    deleteRow();
+                }
+            });
+
+            imageButton.setLayoutParams(layoutParams);
+
+            tableRowArray[i].addView(imageButton);
+
+            tableLayoutData.addView(tableRowArray[i]);
         }
 
-        for (int i = 0; i < numberOfRows; i++) {
-            tableLayoutData.addView(tableRowArray[i], new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        }
     }
+
+    /**
+     * The following code updates the length of TextViews and EditTexts
+     */
 
     public void updateCellLength(int currentColumn) {
         int longestCell = findLongestCell(currentColumn);
 
         final float scale = getResources().getDisplayMetrics().density;
-        int pixels = (int) ((longestCell * 12) * scale + 0.5f);
+        int pixels = (int) ((longestCell * 14) * scale + 0.5f);
+
         textViewsHeaders[currentColumn].setWidth(pixels);
 
         for (int i = 0; i < numberOfRows; i++) {
             editTextsArray[i][currentColumn].setWidth(pixels);
         }
+    }
 
+    /**
+     * The following code adds rows to the table
+     */
+
+    public void addRow(View view) {
+        ++numberOfRows;
+        tableRowArray = new TableRow[numberOfRows];
+        editTextsArray = new EditText[numberOfRows][numberOfColumns];
+        drawTable();
+    }
+
+    /**
+     * The following code deletes rows from the table
+     */
+
+    public void deleteRow() {
+        --numberOfRows;
+        tableRowArray = new TableRow[numberOfRows];
+        editTextsArray = new EditText[numberOfRows][numberOfColumns];
+        drawTable();
+    }
+
+    /**
+     * The following code deals with the top right menu
+     */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemThatWasClickedId = item.getItemId();
+
+        if (itemThatWasClickedId == R.id.indstillinger) {
+            Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(i);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * The following code deals with changing of settings
+     */
+
+    private void visibility(SharedPreferences sharedPreferences) {
+
+        if (sharedPreferences.getBoolean(getString(R.string.vis_antal_enheder_key), getResources().getBoolean(R.bool.vis_antal_enheder))) {
+            textViewsHeaders[0].setVisibility(View.VISIBLE);
+
+            for (int i = 0; i < numberOfRows; i++) {
+                editTextsArray[i][0].setVisibility(View.VISIBLE);
+            }
+        } else {
+            textViewsHeaders[0].setVisibility(View.INVISIBLE);
+
+            for (int i = 0; i < numberOfRows; i++) {
+                editTextsArray[i][0].setVisibility(View.INVISIBLE);
+            }
+        }
+    }
+
+    private void setupSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        visibility(sharedPreferences);
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+        if (key.equals(getString(R.string.vis_antal_enheder_key))) {
+            visibility(sharedPreferences);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
 }
