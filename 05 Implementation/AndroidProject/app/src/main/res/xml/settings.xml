@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Overskrift 1">
+
+        <CheckBoxPreference
+            android:defaultValue="@bool/vis_antal_enheder"
+            android:key="@string/vis_antal_enheder_key"
+            android:summaryOff="@string/skjult"
+            android:summaryOn="@string/vist"
+            android:title="@string/vis_antal_enheder" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="test"
+            android:summaryOff="test"
+            android:summaryOn="test"
+            android:title="Test" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Overskrift 2">
+
+        <SwitchPreferenceCompat
+            android:key="switch1"
+            android:summaryOff="Switch off"
+            android:summaryOn="Switch on"
+            android:title="Switch Preference 1" />
+
+        <SwitchPreferenceCompat
+            android:key="switch2"
+            android:summaryOff="Switch off"
+            android:summaryOn="Switch on"
+            android:title="Switch Preference 2" />
+
+    </PreferenceCategory>
+
+
+</android.support.v7.preference.PreferenceScreen>
