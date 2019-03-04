@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -15,12 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import dk.kugelberg.hoek_helper.R;
 
@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -50,6 +51,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         headerColumns = new String[]{getString(R.string.antal_enheder), getString(R.string.vo), getString(R.string.ko), getString(R.string.so), getString(R.string.ve), getString(R.string.ke), getString(R.string.se), getString(R.string.domk), getString(R.string.doms), getString(R.string.gromk), getString(R.string.udvikling)};
         drawTable();
         setupSharedPreferences();
+
+        ActionBar actionBar = this.getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("Opgave X");
+        }
     }
 
     /**
@@ -117,10 +124,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         for (int i = 0; i < numberOfColumns; i++) {
             TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-            layoutParams.setMargins(2, 2, 2, 2);
+//            layoutParams.setMargins(2, 2, 2, 2);
 
             TextView textView = new TextView(this);
-            textView.setBackgroundColor(Color.GRAY);
+            textView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_gray_bg));
             textView.setText(headerColumns[i]);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
             textView.setTextColor(Color.BLACK);
@@ -145,14 +152,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             // Create EditTexts
             for (int j = 0; j < numberOfColumns; j++) {
                 TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                layoutParams.setMargins(2, 2, 2, 2);
+//                layoutParams.setMargins(2, 2, 2, 2);
 
                 EditText editText = new EditText(this);
 
                 if (i % 2 == 0)
-                    editText.setBackgroundColor(Color.WHITE);
+                    editText.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_white_bg));
                 else
-                    editText.setBackgroundColor(Color.LTGRAY);
+                    editText.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_light_gray_bg));
 
                 editText.setText(i + " " + j);
                 editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
@@ -191,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
             ImageButton imageButton = new ImageButton(this);
             imageButton.setImageResource(android.R.drawable.ic_delete);
-            imageButton.setBackgroundColor(getResources().getColor(R.color.white));
+            imageButton.setBackgroundColor(getResources().getColor(R.color.transparent));
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View arg0) {
@@ -261,7 +268,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemThatWasClickedId = item.getItemId();
 
-        if (itemThatWasClickedId == R.id.indstillinger) {
+        if (itemThatWasClickedId == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
+        } else if (itemThatWasClickedId == R.id.indstillinger) {
             Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(i);
             return true;

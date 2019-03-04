@@ -10,8 +10,7 @@
     <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        >
+        android:layout_margin="2dp">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
@@ -21,8 +20,7 @@
             <TableLayout
                 android:id="@+id/tableLayout_header"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/black" />
+                android:layout_height="wrap_content" />
 
             <ScrollView
                 android:layout_width="wrap_content"
@@ -31,8 +29,7 @@
                 <TableLayout
                     android:id="@+id/tableLayout_data"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/black" />
+                    android:layout_height="wrap_content" />
             </ScrollView>
         </LinearLayout>
     </HorizontalScrollView>
@@ -44,7 +41,7 @@
         android:clickable="true"
         android:focusable="true"
         android:onClick="addRow"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/blue" />
+        android:src="@mipmap/ic_add"
+        app:backgroundTint="@color/colorPrimary" />
 
 </android.support.design.widget.CoordinatorLayout>

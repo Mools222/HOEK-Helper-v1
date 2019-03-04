@@ -2,6 +2,7 @@
 <android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
+        android:layout="@layout/settings_layout"
         android:title="Overskrift 1">
 
         <CheckBoxPreference
@@ -21,6 +22,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:layout="@layout/settings_layout"
         android:title="Overskrift 2">
 
         <SwitchPreferenceCompat
