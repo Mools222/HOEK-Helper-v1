@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 else
                     editText.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_light_gray_bg));
 
-                editText.setText(i + " " + j);
+                editText.setText(String.valueOf(0));
                 editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
                 editText.setTextColor(Color.BLACK);
                 editText.setGravity(Gravity.CENTER);
@@ -286,16 +286,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private void visibility(SharedPreferences sharedPreferences) {
 
         if (sharedPreferences.getBoolean(getString(R.string.vis_antal_enheder_key), getResources().getBoolean(R.bool.vis_antal_enheder))) {
-            textViewsHeaders[0].setVisibility(View.VISIBLE);
-
-            for (int i = 0; i < numberOfRows; i++) {
-                editTextsArray[i][0].setVisibility(View.VISIBLE);
-            }
+            updateCellLength(0);
         } else {
-            textViewsHeaders[0].setVisibility(View.INVISIBLE);
+            textViewsHeaders[0].setWidth(0);
+            textViewsHeaders[0].setHeight(0);
 
             for (int i = 0; i < numberOfRows; i++) {
-                editTextsArray[i][0].setVisibility(View.INVISIBLE);
+                editTextsArray[i][0].setWidth(0);
+                editTextsArray[i][0].setHeight(0);
             }
         }
     }
